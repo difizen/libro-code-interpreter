@@ -1,0 +1,9 @@
+[project]
+name = "libro-code-interpreter"
+version = "0.1.0"
+
+[tool.rye]
+virtual = true
+
+[tool.rye.workspace]
+members = ["libro-client"]

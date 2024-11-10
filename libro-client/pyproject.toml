@@ -1,0 +1,29 @@
+[project]
+name = "libro-client"
+version = "0.1.0"
+description = "libro client"
+authors = [
+  { name = "brokun", email = "brokun0128@gmail.com" },
+  { name = "sunshinesmilelk", email = "1176136681@qq.com" },
+]
+dependencies = [
+  "nbformat>=5.5.0",
+  "nbclient>=0.5.11",
+  "jupyter_client>=7.4.8",
+  "pydantic>=2.6.4",
+]
+readme = "README.md"
+requires-python = ">= 3.9"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/libro_client"]
