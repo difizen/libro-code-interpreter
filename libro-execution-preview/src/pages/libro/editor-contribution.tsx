@@ -19,7 +19,6 @@ export const stateFactory: EditorStateFactory = () => {
 };
 
 export const emptyEditorFactory: CodeEditorFactory = (...args) => {
-  console.log(args);
   return {
     resizeToFit: () => {},
     setOption: () => {},
