@@ -40,12 +40,12 @@ const App = (): JSX.Element => {
           ManaAppPreset,
           LibroModule,
           CodeCellModule,
+          // PlotlyModule,
           MarkdownCellModule,
           RawCellModule,
           StreamOutputModule,
           ErrorOutputModule,
           DisplayDataOutputModule,
-          PlotlyModule,
           BaseModule,
         ]}
       />
