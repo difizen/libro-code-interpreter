@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 
 def cell_start_execution(cell, **kwargs):
     cell.metadata.execution["shell.execute_reply.started"] = datetime.now(
-        datetime.timezone.utc
+        timezone.utc
     ).isoformat()
 
 
@@ -26,6 +26,10 @@ class LibroNotebookClient(NotebookClient):
     execution_current_index: int = -1
     execution_start_time: Optional[datetime]
     execution_end_time: Optional[datetime]
+    before_nb_execution: Optional[Callable[[NotebookNode], None]] = None
+    after_nb_execution: Optional[Callable[[NotebookNode], None]] = None
+    before_cell_execution: Optional[Callable[[NotebookNode], None]] = None
+    after_cell_execution: Optional[Callable[[NotebookNode], None]] = None
 
     @property
     def executable_cells(self) -> List[NotebookNode]:
@@ -41,7 +45,7 @@ class LibroNotebookClient(NotebookClient):
         self,
         nb: NotebookNode,
         km=None,
-        args: dict | None = None,
+        args: Optional[dict] = None,
         **kw,
     ):
         super().__init__(nb=nb, km=km, **kw)
@@ -86,12 +90,17 @@ class LibroNotebookClient(NotebookClient):
 
     async def async_execute(
         self, reset_kc: bool = False,
-        before_nb_execution: Callable[[NotebookNode]] = None,
-        after_nb_execution: Callable[[NotebookNode]] = None,
-        before_cell_execution: Callable[[NotebookNode]] = None,
-        after_cell_execution: Callable[[NotebookNode]] = None,
+        before_nb_execution: Optional[Callable[[NotebookNode], None]] = None,
+        after_nb_execution: Optional[Callable[[NotebookNode], None]] = None,
+        before_cell_execution: Optional[Callable[[NotebookNode], None]] = None,
+        after_cell_execution: Optional[Callable[[NotebookNode], None]] = None,
         **kwargs: Any
     ) -> NotebookNode:
+        self.before_cell_execution = before_cell_execution
+        self.after_cell_execution = after_cell_execution
+        self.before_nb_execution = before_nb_execution
+        self.after_nb_execution = after_nb_execution
+
         if reset_kc and self.owns_km:
             await self._async_cleanup_kernel()
         self.reset_execution_trackers()
@@ -119,7 +128,8 @@ class LibroNotebookClient(NotebookClient):
             self.execution_start_time = datetime.now(timezone.utc)
             nb_metadata["libro_execute_start_time"] = self.execution_start_time.isoformat()
 
-            await pre_nb_execution()
+            if self.before_nb_execution is not None:
+                await ensure_async(self.before_nb_execution(self.nb))
             await ensure_async(
                 self.kc.execute(
                     f"__libro_execute_args_dict__={self.args}\n",
@@ -127,16 +137,9 @@ class LibroNotebookClient(NotebookClient):
                     stop_on_error=not cell_allows_errors,
                 )
             )
-            if self.execute_result_path is not None:
-                await ensure_async(
-                    self.kc.execute(
-                        f"__libro_execute_result__='{self.execute_result_path}'\n",
-                        store_history=False,
-                        stop_on_error=not cell_allows_errors,
-                    )
-                )
-                self.execution_status.execute_result_path = self.execute_result_path
             for index, cell in enumerate(nb_cells):
+                if self.before_cell_execution is not None:
+                    await ensure_async(self.before_cell_execution(cell))
                 await self.async_execute_cell(
                     cell, index, execution_count=self.code_cells_executed + 1
                 )
@@ -147,14 +150,17 @@ class LibroNotebookClient(NotebookClient):
                     cell_execution: dict = cell.metadata.execution
                     cell_execution["shell.execute_reply.end"] = (
                         datetime.now(timezone.utc).isoformat())
+                    if self.after_cell_execution is not None:
+                        await ensure_async(self.after_cell_execution(cell))
                 except:
                     pass
-            # await pre_nb_execution()
 
             self.set_widgets_metadata()
             self.kc.shutdown()
             self.execution_end_time = datetime.now(timezone.utc)
             nb_metadata["libro_execute_end_time"] = self.execution_end_time.isoformat()
+            if self.after_nb_execution is not None:
+                await ensure_async(self.after_nb_execution(self.nb))
         return self.nb
 
     execute = run_sync(async_execute)

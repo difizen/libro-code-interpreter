@@ -11,6 +11,7 @@ dependencies = [
   "nbclient>=0.5.11",
   "jupyter_client>=7.4.8",
   "pydantic>=2.6.4",
+  "ipython>=8.18.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.9"
@@ -27,3 +28,8 @@ allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/libro_client"]
+
+
+[tool.rye.scripts]
+test = "python src/libro_client/test.py"
+kernels = "ipython kernelspec list"
