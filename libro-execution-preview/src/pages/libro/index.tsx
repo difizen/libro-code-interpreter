@@ -20,6 +20,7 @@ import {
 import { EmptyEditorContribution } from './editor-contribution.js';
 import { PageContentContribition } from './content-contribution.js';
 import { CodeCellModule } from './empty-code-cell/module.js';
+import { PlotlyModule } from './plotly/module.js';
 
 const BaseModule = ManaModule.create().register(
   LibroApp,
@@ -44,6 +45,7 @@ const App = (): JSX.Element => {
           StreamOutputModule,
           ErrorOutputModule,
           DisplayDataOutputModule,
+          PlotlyModule,
           BaseModule,
         ]}
       />
