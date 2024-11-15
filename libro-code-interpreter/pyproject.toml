@@ -1,0 +1,25 @@
+[project]
+name = "libro-code-interpreter"
+version = "0.1.0"
+description = "libro code interpreter"
+authors = [{ name = "brokun", email = "brokun0128@gmail.com" }]
+dependencies = ["libro_client>=0.1.0", "ipython>=8.18.1", "requests>=2.32.3"]
+readme = "README.md"
+requires-python = ">= 3.9"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/libro_code_interpreter"]
+
+
+[tool.rye.scripts]
+test = "python src/libro_code_interpreter/test.py"

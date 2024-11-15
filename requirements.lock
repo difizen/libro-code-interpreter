@@ -8,6 +8,8 @@
 #   with-sources: false
 
 -e file:libro-client
+    # via libro-code-interpreter
+-e file:libro-code-interpreter
 annotated-types==0.7.0
     # via pydantic
 asttokens==2.4.1
@@ -15,6 +17,14 @@ asttokens==2.4.1
 attrs==24.2.0
     # via jsonschema
     # via referencing
+beautifulsoup4==4.12.3
+    # via bs4
+bs4==0.0.2
+    # via libro-code-interpreter
+certifi==2024.8.30
+    # via requests
+charset-normalizer==3.4.0
+    # via requests
 decorator==5.1.1
     # via ipython
 exceptiongroup==1.2.2
@@ -23,10 +33,13 @@ executing==2.1.0
     # via stack-data
 fastjsonschema==2.20.0
     # via nbformat
+idna==3.10
+    # via requests
 importlib-metadata==8.5.0
     # via jupyter-client
 ipython==8.18.1
     # via libro-client
+    # via libro-code-interpreter
 jedi==0.19.2
     # via ipython
 jsonschema==4.23.0
@@ -72,12 +85,16 @@ pyzmq==26.2.0
 referencing==0.35.1
     # via jsonschema
     # via jsonschema-specifications
+requests==2.32.3
+    # via libro-code-interpreter
 rpds-py==0.21.0
     # via jsonschema
     # via referencing
 six==1.16.0
     # via asttokens
     # via python-dateutil
+soupsieve==2.6
+    # via beautifulsoup4
 stack-data==0.6.3
     # via ipython
 tornado==6.4.1
@@ -93,6 +110,8 @@ typing-extensions==4.12.2
     # via ipython
     # via pydantic
     # via pydantic-core
+urllib3==2.2.3
+    # via requests
 wcwidth==0.2.13
     # via prompt-toolkit
 zipp==3.20.2

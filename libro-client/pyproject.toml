@@ -32,4 +32,3 @@ packages = ["src/libro_client"]
 
 [tool.rye.scripts]
 test = "python src/libro_client/test.py"
-kernels = "ipython kernelspec list"

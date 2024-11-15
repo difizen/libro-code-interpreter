@@ -6,4 +6,4 @@ version = "0.1.0"
 virtual = true
 
 [tool.rye.workspace]
-members = ["libro-client"]
+members = ["libro-client", "libro-code-interpreter"]
