@@ -48,11 +48,11 @@ def execute_ipython(code: str, host=DEFAULT_APP_HOST) -> int:
             md = to_markdown(notebook_str, host)
             print(md)
             # write to file
-            # with open('index.md', 'w') as file:
+            # with open('../../../.cache/index.md', 'w') as file:
             #     file.write(md)
 
             # html = to_html(notebook_str, host)
-            # with open('index.html', 'w') as file:
+            # with open('../../../.cache/index.html', 'w') as file:
             #     file.write(html)
 
     except Exception as e:
