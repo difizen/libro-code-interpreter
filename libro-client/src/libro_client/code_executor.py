@@ -9,6 +9,8 @@ def create_notebook_with_kernel():
     kernel_name = select_kernel()
     if not kernel_name:
         raise RuntimeError("No suitable Python kernel found.")
+    else:
+        print(f"[libro-code-interpreter] Using kernel: {kernel_name}")
 
     # Create a new Notebook object
     nb = nbf.v4.new_notebook()

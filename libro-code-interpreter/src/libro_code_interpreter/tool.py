@@ -28,7 +28,7 @@ DEFAULT_APP_HOST = 'https://libro-code-interpreter.vercel.app/'
 
 
 def execute_ipython(code: str, host=DEFAULT_APP_HOST) -> int:
-    """A Python code executor. Use this to execute python commands. Input should be a valid python command.
+    """A Python code executor. Use this to execute python commands. Input should be a valid python command. The return value should be output as the result.
 
     Args:
         code: pytho code
@@ -43,10 +43,14 @@ def execute_ipython(code: str, host=DEFAULT_APP_HOST) -> int:
             display(data, raw=True)
             exec(command)
         else:
+            print('[libro-code-interpreter] Running python code: %s' % (command))
             client = execute_code(command)
-            notebook_str = json.dumps(client.nb)
-            md = to_markdown(notebook_str, host)
-            print(md)
+            cells = client.nb.cells
+            first_cell = cells[0]
+            outputs = first_cell.outputs
+            outputs_str = json.dumps(outputs)
+            md = to_outputs_markdown(outputs_str, host)
+            return md
             # write to file
             # with open('../../../.cache/index.md', 'w') as file:
             #     file.write(md)
@@ -93,3 +97,14 @@ def to_markdown(notebook_json: str, host=DEFAULT_APP_HOST) -> str:
     import urllib.parse
     safe_string = urllib.parse.quote_plus(notebook_json)
     return f'\n<iframe src="{host}?notebook={safe_string}" width="100%"  style="border:none"></iframe>\n'
+
+
+def to_outputs_markdown(notebook_json: str, host=DEFAULT_APP_HOST) -> str:
+    """Convert notebook json to markdown using iframe
+
+    Args:
+        notebook_json (str): notebook json
+    """
+    import urllib.parse
+    safe_string = urllib.parse.quote_plus(notebook_json)
+    return f'\n<iframe src="{host}?outputs={safe_string}" width="100%"  style="border:none"></iframe>\n'

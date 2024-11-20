@@ -15,6 +15,23 @@ export class PageContentContribition implements ContentContribution {
       const notebook = JSON.parse(decodeURIComponent(query['notebook'] as string));
       return Promise.resolve(notebook);
     }
+    if (query['outputs']) {
+      const outputs = JSON.parse(decodeURIComponent(query['outputs'] as string));
+      return Promise.resolve({
+        metadata: {},
+        cells: [
+          {
+            cell_type: 'code',
+            execution_count: 1,
+            metadata: {},
+            outputs: outputs,
+            source: [''],
+          },
+        ],
+        nbformat: 4,
+        nbformat_minor: 4,
+      });
+    }
     if ((window as any).notebook) {
       return (window as any).notebook;
     }
